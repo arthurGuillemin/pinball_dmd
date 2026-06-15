@@ -1,5 +1,10 @@
 import { useMemo } from "react";
-import { buildBorderBlinkSequence, buildBorderPath, buildBorderFrameSequence, buildHorizontalBorderSequence } from "../helpers/dmdBorderEffects";
+import {
+  buildBorderBlinkSequence,
+  buildBorderPath,
+  buildBorderFrameSequence,
+  buildHorizontalBorderSequence,
+} from "../helpers/borderEffects";
 
 function useBorderSequences({ cols, rows }) {
   const borderSequence = useMemo(
@@ -19,7 +24,12 @@ function useBorderSequences({ cols, rows }) {
 
   const borderPath = useMemo(() => buildBorderPath(cols, rows), [cols, rows]);
 
-  return { borderSequence, scoreFrameSequence, gameOverBorderSequence, borderPath };
+  return {
+    borderSequence,
+    scoreFrameSequence,
+    gameOverBorderSequence,
+    borderPath,
+  };
 }
 
 export default useBorderSequences;

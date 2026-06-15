@@ -1,6 +1,17 @@
 import { useMemo } from "react";
 
-function useDmdGridConfig({ screenSize, cols, rows, gap, activeColor, backgroundDotColor, config, borderInterval = 220, fireworksInterval = 140, snakeLength = 0, snakeTailMinOpacity = 0.2,
+function useDmdGridConfig({
+  screenSize,
+  cols,
+  rows,
+  gap,
+  activeColor,
+  backgroundDotColor,
+  config,
+  borderInterval = 220,
+  fireworksInterval = 140,
+  snakeLength = 0,
+  snakeTailMinOpacity = 0.2,
 }) {
   const gridConfig = useMemo(() => {
     const usableWidth = Math.max(0, screenSize.width - gap * (cols - 1));
@@ -33,7 +44,9 @@ function useDmdGridConfig({ screenSize, cols, rows, gap, activeColor, background
   );
 
   const borderConfig = useMemo(
-    () => ({ ...gridConfig, shape: "circle",
+    () => ({
+      ...gridConfig,
+      shape: "circle",
       color: activeColor,
       inactiveColor: "transparent",
       interval: borderInterval,
@@ -70,7 +83,14 @@ function useDmdGridConfig({ screenSize, cols, rows, gap, activeColor, background
     });
   }, [activeColor, gridConfig, snakeLength, snakeTailMinOpacity]);
 
-  return { gridConfig, backgroundConfig, textConfig, borderConfig, fireworksConfig, snakeConfigs };
+  return {
+    gridConfig,
+    backgroundConfig,
+    textConfig,
+    borderConfig,
+    fireworksConfig,
+    snakeConfigs,
+  };
 }
 
 export default useDmdGridConfig;

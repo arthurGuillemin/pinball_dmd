@@ -7,7 +7,12 @@ const offsetFrame = (frame, cols, rows, fireworksGrid, rowOffset, colOffset) =>
     })
     .filter((index) => index >= 0 && index < cols * rows);
 
-const buildFireworksSequence = ({ dotSequences, gridCols, gridRows, fireworksGrid }) => {
+const buildFireworksSequence = ({
+  dotSequences,
+  gridCols,
+  gridRows,
+  fireworksGrid,
+}) => {
   const fireworksA = dotSequences.fireworksA?.frames ?? [];
   const fireworksB = dotSequences.fireworksB?.frames ?? [];
   const fireworksC = dotSequences.fireworksC?.frames ?? [];
@@ -24,7 +29,11 @@ const buildFireworksSequence = ({ dotSequences, gridCols, gridRows, fireworksGri
   const bottomRow = Math.max(0, gridRows - fireworksGrid - 2);
   const bottomColLeft = 2;
   const bottomColRight = Math.max(0, gridCols - fireworksGrid - 2);
-  const frameCount = Math.max( fireworksA.length, fireworksB.length, fireworksC.length);
+  const frameCount = Math.max(
+    fireworksA.length,
+    fireworksB.length,
+    fireworksC.length,
+  );
   const sequence = [];
 
   for (let i = 0; i < frameCount; i += 1) {
@@ -32,11 +41,46 @@ const buildFireworksSequence = ({ dotSequences, gridCols, gridRows, fireworksGri
     const frameB = fireworksB.length ? fireworksB[i % fireworksB.length] : [];
     const frameC = fireworksC.length ? fireworksC[i % fireworksC.length] : [];
     const indices = [
-      ...offsetFrame( frameA, gridCols, gridRows, fireworksGrid, topRow, topColLeft ),
-      ...offsetFrame( frameA, gridCols, gridRows, fireworksGrid, bottomRow, bottomColRight ),
-      ...offsetFrame( frameB, gridCols, gridRows, fireworksGrid, topRow, topColRight ),
-      ...offsetFrame( frameB, gridCols, gridRows, fireworksGrid, bottomRow, bottomColLeft ),
-      ...offsetFrame( frameC, gridCols, gridRows, fireworksGrid, middleRow, middleCol ),
+      ...offsetFrame(
+        frameA,
+        gridCols,
+        gridRows,
+        fireworksGrid,
+        topRow,
+        topColLeft,
+      ),
+      ...offsetFrame(
+        frameA,
+        gridCols,
+        gridRows,
+        fireworksGrid,
+        bottomRow,
+        bottomColRight,
+      ),
+      ...offsetFrame(
+        frameB,
+        gridCols,
+        gridRows,
+        fireworksGrid,
+        topRow,
+        topColRight,
+      ),
+      ...offsetFrame(
+        frameB,
+        gridCols,
+        gridRows,
+        fireworksGrid,
+        bottomRow,
+        bottomColLeft,
+      ),
+      ...offsetFrame(
+        frameC,
+        gridCols,
+        gridRows,
+        fireworksGrid,
+        middleRow,
+        middleCol,
+      ),
     ];
     sequence.push(indices);
   }
