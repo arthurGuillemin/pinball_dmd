@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { buildFireworksSequence } from "../helpers/dmdFireworks";
+import { buildFireworksSequence } from "../helpers/fireworks";
 
 function useFireworksSequence({ dotSequences, gridCols, gridRows, fireworksGrid }) {
   return useMemo(
