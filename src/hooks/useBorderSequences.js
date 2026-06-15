@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { buildBorderBlinkSequence, buildBorderPath, buildBorderFrameSequence, buildHorizontalBorderSequence } from "../helpers/dmdBorderEffects";
+import { buildBorderBlinkSequence, buildBorderPath, buildBorderFrameSequence, buildHorizontalBorderSequence } from "../helpers/borderEffects";
 
 function useBorderSequences({ cols, rows }) {
   const borderSequence = useMemo(
