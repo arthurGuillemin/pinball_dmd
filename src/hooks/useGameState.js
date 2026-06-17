@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import socketService from "../service/socket.service";
 
 const MESSAGE_TYPES = {
@@ -21,7 +21,14 @@ const SCREEN_BY_TYPE = {
   [MESSAGE_TYPES.GAME_OVER]: "gameOver",
 };
 
+// Écrans qui doivent revenir à "default" après un délai
+const TRANSIENT_TYPES = new Set([
+  MESSAGE_TYPES.BALL_LOST,
+  MESSAGE_TYPES.START_GAME,
+]);
+
 const DEFAULT_SCREEN = "default";
+const DELAY = 1500;
 
 function getScreenFromMessage(data) {
   if (data.type === MESSAGE_TYPES.CONNECTED) {
@@ -31,23 +38,42 @@ function getScreenFromMessage(data) {
 }
 
 export function useGameState() {
-  const [screen, setScreen] = useState("ready");
-  const [score, setScore] = useState("0");
+  const [screen, setScreen] = useState("pressStart");
+  const [score, setScore] = useState(0);
+  const delayTimer = useRef(null); // ✅ ref stable entre les renders
 
   useEffect(() => {
     socketService.connect();
 
     const handleMessage = (data) => {
       console.log("[DMD] Message reçu:", data);
-      setScore(data.state.score.toString());
-      setScreen(getScreenFromMessage(data));
+
+      // ✅ Mise à jour du score uniquement si disponible
+      if (data.state?.score != null) {
+        setScore(data.state.score.toString());
+      }
+
+      const nextScreen = getScreenFromMessage(data);
+      setScreen(nextScreen);
+
+      clearTimeout(delayTimer.current);
+
+      // ✅ Retour à "default" uniquement pour les écrans transitoires
+      if (TRANSIENT_TYPES.has(data.type)) {
+        clearTimeout(delayTimer.current);
+        delayTimer.current = setTimeout(() => {
+          setScreen(DEFAULT_SCREEN);
+        }, DELAY);
+      }
     };
 
     socketService.onScreenMessage(handleMessage);
-    return () => socketService.disconnect();
+
+    return () => {
+      socketService.disconnect();
+      clearTimeout(delayTimer.current); // ✅ nettoyage au démontage
+    };
   }, []);
-  return {
-    screen,
-    score,
-  };
+
+  return { screen, score };
 }

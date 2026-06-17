@@ -12,6 +12,7 @@ function App() {
       {screen === "default" && <DMD text={score} scroll={false} />}
       {screen === "gameOver" && <DMD text={DMD_MESSAGES.gameOver} />}
       {screen === "pressStart" && <DMD text={DMD_MESSAGES.pressStart} />}
+      {screen === "bravo" && <DMD text={DMD_MESSAGES.bravo} scroll={false} />}
       {screen === "go" && <DMD text={DMD_MESSAGES.go} scroll={false} />}
       {screen === "ball_lost" && (
         <DMD text={getDMDRandomMessage("ball_lost")} scroll={false} />
