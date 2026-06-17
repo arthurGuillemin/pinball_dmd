@@ -71,7 +71,7 @@ export function useGameState() {
 
     return () => {
       socketService.disconnect();
-      clearTimeout(delayTimer.current); // ✅ nettoyage au démontage
+      clearTimeout(delayTimer.current);
     };
   }, []);
 
