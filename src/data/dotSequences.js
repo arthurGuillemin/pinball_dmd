@@ -51,7 +51,10 @@ const FIREWORKS_A_FRAMES = [
   [16, 18, 24, 30, 32],
   [8, 12, 16, 18, 24, 30, 32, 36, 40],
   [3, 8, 10, 12, 16, 18, 21, 22, 24, 26, 27, 30, 32, 36, 38, 40, 45],
-  [ 0, 3, 6, 8, 10, 12, 16, 18, 21, 22, 24, 26, 27, 30, 32, 36, 38, 40, 42, 45, 48, ],
+  [
+    0, 3, 6, 8, 10, 12, 16, 18, 21, 22, 24, 26, 27, 30, 32, 36, 38, 40, 42, 45,
+    48,
+  ],
 ];
 
 const FIREWORKS_B_FRAMES = [
@@ -124,4 +127,4 @@ const DOT_SEQUENCES = {
   },
 };
 
-export {  DOT_SEQUENCES, getFramesFromText };
+export { DOT_SEQUENCES, getFramesFromText };

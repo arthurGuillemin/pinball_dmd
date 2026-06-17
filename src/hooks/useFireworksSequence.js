@@ -1,10 +1,20 @@
 import { useMemo } from "react";
 import { buildFireworksSequence } from "../helpers/fireworks";
 
-function useFireworksSequence({ dotSequences, gridCols, gridRows, fireworksGrid }) {
+function useFireworksSequence({
+  dotSequences,
+  gridCols,
+  gridRows,
+  fireworksGrid,
+}) {
   return useMemo(
     () =>
-      buildFireworksSequence({ dotSequences, gridCols, gridRows, fireworksGrid }),
+      buildFireworksSequence({
+        dotSequences,
+        gridCols,
+        gridRows,
+        fireworksGrid,
+      }),
     [dotSequences, gridCols, gridRows, fireworksGrid],
   );
 }
