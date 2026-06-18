@@ -6,6 +6,7 @@ import useDmdModes from "../hooks/useModes";
 import useDmdScreenSize from "../hooks/useScreenSize";
 import useFireworksSequence from "../hooks/useFireworksSequence";
 import useSnakeFrames from "../hooks/useSnakeFrames";
+import { useLivesSequence } from "../hooks/useLivesSequence";
 import { DOT_SEQUENCES } from "../data/dotSequences";
 
 const GRID_COLS = 40;
@@ -27,6 +28,7 @@ function DMD({
   scroll = true,
   borderBlink,
   borderSnake,
+  lives = 3,
 }) {
   const { screenRef, screenSize } = useDmdScreenSize();
   const activeColor = config?.color ?? DOT_COLOR;
@@ -64,6 +66,8 @@ function DMD({
 
   const { isJackpot, isScore, isGameOver, shouldBlink, shouldSnake } =
     useDmdModes({ text, borderBlink, borderSnake });
+
+  const livesSequence = useLivesSequence(lives, GRID_COLS);
 
   const showFireworks = isJackpot;
 
@@ -134,6 +138,11 @@ function DMD({
             </div>
           </div>
         ) : null}
+        <div className="dmd-grid">
+          <div className="dmd-layer">
+            <DotMatrix sequence={livesSequence} {...borderConfig} />
+          </div>
+        </div>
         <div className="dmd-content">
           <DotMatrixDisplay
             text={text}
