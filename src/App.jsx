@@ -16,7 +16,8 @@ function App() {
       {screen === "go" && <DMD text={DMD_MESSAGES.go} scroll={false} />}
       {screen === "ball_lost" && (
         <DMD text={getDMDRandomMessage("ball_lost")} scroll={false} />
-      )}
+      )} 
+      <DMD text={DMD_MESSAGES.pressStart} lives={2} />
     </main>
   );
 }
