@@ -40,7 +40,7 @@ function getScreenFromMessage(data) {
 export function useGameState() {
   const [screen, setScreen] = useState("pressStart");
   const [score, setScore] = useState(0);
-  const [lives, setLives] = useState(3);
+  const [balls, setBalls] = useState(3);
   const delayTimer = useRef(null); // ✅ ref stable entre les renders
 
   useEffect(() => {
@@ -54,8 +54,8 @@ export function useGameState() {
         setScore(data.state.score.toString());
       }
 
-      if (data.state?.lives != null) {
-        setLives(data.state.lives);
+      if (data.state?.balls != null) {
+        setBalls(data.state.balls);
       }
 
       const nextScreen = getScreenFromMessage(data);
@@ -80,5 +80,5 @@ export function useGameState() {
     };
   }, []);
 
-  return { screen, score, lives };
+  return { screen, score, balls };
 }
