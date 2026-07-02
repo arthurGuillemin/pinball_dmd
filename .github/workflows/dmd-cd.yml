@@ -1,4 +1,4 @@
-name: CD Production Frontend
+name: CD Production DMD
 
 on:
   push:
@@ -20,8 +20,6 @@ jobs:
   lint-and-build:
     needs: security-scan
     runs-on: ubuntu-latest
-    outputs:
-      build_success: ${{ steps.build.outcome }}
     steps:
       - uses: actions/checkout@v4
 
@@ -38,10 +36,7 @@ jobs:
         continue-on-error: true
 
       - name: Build React
-        id: build
         run: npm run build
-        env:
-          VITE_SERVER_URL: ${{ secrets.VITE_SERVER_URL }}
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -69,7 +64,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install dependencies
         run: npm ci
@@ -89,29 +84,77 @@ jobs:
           GIT_COMMITTER_NAME: "github-actions[bot]"
           GIT_COMMITTER_EMAIL: "github-actions[bot]@users.noreply.github.com"
 
+  build-and-push:
+    needs: release
+    if: needs.release.outputs.new_release_published == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: docker/setup-qemu-action@v3
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: arthurguill/pinball-dmd
+          tags: |
+            type=semver,pattern={{version}},value=v${{ needs.release.outputs.new_release_version }}
+            type=semver,pattern={{major}}.{{minor}},value=v${{ needs.release.outputs.new_release_version }}
+            type=raw,value=latest
+
+      - name: Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=arthurguill/pinball-dmd:buildcache
+          cache-to: type=registry,ref=arthurguill/pinball-dmd:buildcache,mode=max
+
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          image-ref: arthurguill/pinball-dmd:latest
+          severity: HIGH,CRITICAL
+          exit-code: '0'
+          format: sarif
+          output: trivy-results.sarif
+
+      - name: Upload Trivy results to GitHub Security
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif
+
   notify-team:
-    needs: [release]
+    needs: [release, build-and-push]
     if: always() && needs.release.outputs.new_release_published == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Notify success
+        if: needs.build-and-push.result == 'success'
         run: |
           curl -H "Content-Type: application/json" \
-            -d "{\"content\": \" **DMD : Nouvelle Release sur le dmd v${{ needs.release.outputs.new_release_version }}**\n Build et scan Docker réussis\n Image: arthurguill/pinball-playfield:latest\n Triggered by @${{ github.actor }}\"}" \
+            -d "{\"content\": \" **DMD : Release v${{ needs.release.outputs.new_release_version }}**\nImage Docker pushée pour amd64 + arm64\nTriggered by @${{ github.actor }}\"}" \
             ${{ secrets.DISCORD_WEBHOOK }}
 
       - name: Notify failure
-        run: |
-          REASON="Docker build"
-            REASON="security scan (Trivy) ou Docker build"
-          fi
-          curl -H "Content-Type: application/json" \
-            -d "{\"content\": \" **DMD : Release v${{ needs.release.outputs.new_release_version }} - Échec**\n Erreur au niveau: ${REASON}\n Triggered by @${{ github.actor }}\n\n Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
-            ${{ secrets.DISCORD_WEBHOOK }}
-
-      - name: Notify no release
-        if: needs.release.outputs.new_release_published != 'true'
+        if: needs.build-and-push.result == 'failure'
         run: |
           curl -H "Content-Type: application/json" \
-            -d "{\"content\": \" **DMD : Push sur main**\n Aucune nouvelle release générée\n Triggered by @${{ github.actor }}\"}" \
+            -d "{\"content\": \" **DMD : Release v${{ needs.release.outputs.new_release_version }} — Échec**\nTriggered by @${{ github.actor }}\nLogs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
             ${{ secrets.DISCORD_WEBHOOK }}
