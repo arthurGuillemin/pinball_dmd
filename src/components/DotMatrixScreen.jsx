@@ -1,5 +1,5 @@
 import { DotMatrix } from "dot-anime-react";
-import DotMatrixDisplay from "./DotMatrixText";
+import DotMatrixText from "./DotMatrixText";
 import useBorderSequences from "../hooks/useBorderSequences";
 import useDmdGridConfig from "../hooks/useGridConfig";
 import useDmdModes from "../hooks/useModes";
@@ -144,7 +144,7 @@ function DMD({
           </div>
         </div>
         <div className="dmd-content">
-          <DotMatrixDisplay
+          <DotMatrixText
             text={text}
             sequence={sequence}
             config={textConfig}

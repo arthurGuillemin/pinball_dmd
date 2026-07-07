@@ -1,5 +1,5 @@
 import "./App.css";
-import DMD from "./components/Dot MatrixScreen";
+import DMD from "./components/DotMatrixScreen";
 import { DMD_MESSAGES, getDMDRandomMessage } from "./data/messages";
 
 import { useGameState } from "./hooks/useGameState";
@@ -9,7 +9,7 @@ function App() {
 
   return (
     <main className="app">
-      {screen === "default" && (
+      {/* {screen === "default" && (
         <DMD text={score} scroll={false} lives={balls} />
       )}
       {screen === "gameOver" && <DMD text={DMD_MESSAGES.gameOver} lives={0} />}
@@ -24,8 +24,9 @@ function App() {
       )}
       {screen === "ball_lost" && (
         <DMD text={getDMDRandomMessage("ball_lost")} scroll={false} lives={0} />
-      )}
-      {/* <DMD text={DMD_MESSAGES.pressStart} lives={2} /> */}
+      )} */}
+      {/* <DMD text={DMD_MESSAGES.bravo} scroll={false} lives={2} /> */}
+      <DMD text="1200" scroll={false} lives={0} />
     </main>
   );
 }
