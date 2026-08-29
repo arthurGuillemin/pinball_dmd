@@ -6,8 +6,9 @@ class SocketService {
     this.Listeners = [];
   }
 
-  connect() {
-    this.dmd = new WebSocket(`${WS_URL}/screens`);
+  connect(testUrl) {
+    const wsUrl = testUrl ? testUrl : `${WS_URL}/screens`;
+    this.dmd = new WebSocket(wsUrl);
     this.dmd.onopen = () => console.log("[DmD] connecté ✅");
     this.dmd.onclose = () => console.log("[DmD] déconnecté ❌");
     this.dmd.onerror = (e) => console.error("[DmD] erreur 😵", e);
