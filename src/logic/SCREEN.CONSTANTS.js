@@ -1,0 +1,37 @@
+export const DEFAULT_SCREEN = "default";
+
+export const SOCKET_MESSAGES = {
+  START_GAME: "start_game",
+  BUMPER_HIT: "bumper_hit",
+  SLINGSHOT_HIT: "slingshot_hit",
+  LIGHT_SENSOR: "light_sensor",
+  BALL_LOST: "ball_lost",
+  GAME_OVER: "game_over",
+  CONNECTED: "state_update",
+  ALL_CARD: "all_cards",
+};
+export const FANSY_MESSAGE = {
+  BRAVO: "bravo",
+};
+
+export const SCORING_MESSAGES = new Set([
+  SOCKET_MESSAGES.BUMPER_HIT,
+  SOCKET_MESSAGES.SLINGSHOT_HIT,
+  SOCKET_MESSAGES.LIGHT_SENSOR,
+]);
+
+export const SCREEN_BY_TYPE = {
+  [SOCKET_MESSAGES.CONNECTED]: "pressStart",
+  [SOCKET_MESSAGES.START_GAME]: "go",
+  [SOCKET_MESSAGES.LIGHT_SENSOR]: DEFAULT_SCREEN,
+  [SOCKET_MESSAGES.SLINGSHOT_HIT]: DEFAULT_SCREEN,
+  [SOCKET_MESSAGES.BUMPER_HIT]: DEFAULT_SCREEN,
+  [SOCKET_MESSAGES.BALL_LOST]: "ball_lost",
+  [SOCKET_MESSAGES.GAME_OVER]: "game_over",
+  [SOCKET_MESSAGES.ALL_CARD]: "all_cards",
+};
+
+export const TRANSITIONAL_TYPES = new Set([
+  SOCKET_MESSAGES.BALL_LOST,
+  SOCKET_MESSAGES.START_GAME,
+]);
